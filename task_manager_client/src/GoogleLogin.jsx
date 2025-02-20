@@ -1,18 +1,30 @@
-import { useContext } from "react";
+
+
+
+"use client";
+
+import { useContext, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 import { AuthContext } from "./Provider/AuthProvider";
-import toast from "react-hot-toast"; // ✅ Import react-hot-toast
 
 const GoogleLogin = () => {
   const { signInWithGoogle } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
+    setLoading(true);
     try {
       await signInWithGoogle();
-      toast.success("✅ Successfully logged in!"); // ✅ Show success toast
+      toast.success(" Successfully logged in!");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Google Sign-In Error:", error);
-      toast.error("❌ Login failed! Please try again."); // ✅ Show error toast
+      toast.error(" Login failed! Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -24,10 +36,15 @@ const GoogleLogin = () => {
 
         <button
           onClick={handleGoogleLogin}
-          className="flex items-center justify-center w-full bg-gray-100 border border-gray-300 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-5 rounded-lg shadow-md transition duration-300"
+          className="flex items-center justify-center w-full bg-gray-100 border border-gray-300 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-5 rounded-lg shadow-md transition duration-300 disabled:opacity-50"
+          disabled={loading}
         >
-          <FcGoogle className="text-2xl mr-2" />
-          Sign in with Google
+          {loading ? (
+            <span className="animate-spin mr-2">⏳</span>
+          ) : (
+            <FcGoogle className="text-2xl mr-2" />
+          )}
+          {loading ? "Signing in..." : "Sign in with Google"}
         </button>
       </div>
     </div>
