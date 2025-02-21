@@ -11,10 +11,14 @@ import ToDo from './Components/ToDo.jsx'
 import Progress from './Components/Progress.jsx'
 import Finish from './Components/Finish.jsx'
 import NewTask from './Components/NewTask.jsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import EditTask from './Components/EditTask.jsx'
+const queryClient = new QueryClient()
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider> 
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<GoogleLogin />} />
@@ -24,11 +28,13 @@ createRoot(document.getElementById("root")).render(
                     <Route path="progress" element={<Progress />} />
                     <Route path="finish" element={<Finish />} />
                     <Route path='newTask' element={<NewTask/>} />
+                    <Route path='editTask/:id' element={<EditTask/>} />
                     <Route path="*" element={<h1>Not Found</h1>} /> 
                 </Route>
         </Routes>
       </BrowserRouter>
       <Toaster position='top-right' reverseOrder={false} />
+      </QueryClientProvider>
     </AuthProvider>
   </StrictMode>
 );
